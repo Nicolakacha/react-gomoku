@@ -7,38 +7,7 @@ export default function useBoard() {
   const [board, setBoard] = useState(initialBoard);
   const [currentPlayer, setPlayer] = useState(initialPlayer);
   const [winner, setWinner] = useState();
-  
-  const handlePlayClick = (x, y, currentPlayer) => () => {
-    const newBoard = JSON.parse(JSON.stringify(board));
-  
-    if (board[x][y] === 'empty' && !winner) {
-      newBoard[x][y] = currentPlayer;
-    } else {
-      return;
-    }
-  
-    setBoard(newBoard);
-    setPlayer(currentPlayer === 'black' ? 'white' : 'black');
-    checkWinner(newBoard, x, y);
-  };
-  
-  const handleRestartButtonClick = () => {
-    setPlayer(initialPlayer);
-    setBoard(initialBoard);
-    setWinner();
-  };
-  
-  const checkWinner = (newBoard, x, y) => {
-    if (
-      countTotal(newBoard, x, y, 1, 0) + countTotal(newBoard, x, y, -1, 0) >= 4 ||
-      countTotal(newBoard, x, y, 0, 1) + countTotal(newBoard, x, y, 0, -1) >= 4 ||
-      countTotal(newBoard, x, y, 1, 1) + countTotal(newBoard, x, y, -1, -1) >=  4 ||
-      countTotal(newBoard, x, y, 1, -1) + countTotal(newBoard, x, y, -1, 1) >= 4
-    ) {
-      setWinner(() =>newBoard[x][y]);
-    }
-  };
-  
+
   const countTotal = (newBoard, currentX, currentY, directionX, directionY) => {
     const now = newBoard[currentX][currentY];
     let tempX = currentX;
@@ -60,6 +29,37 @@ export default function useBoard() {
       }
     }
     return total;
+  };
+  
+  const checkWinner = (newBoard, x, y) => {
+    if (
+      countTotal(newBoard, x, y, 1, 0) + countTotal(newBoard, x, y, -1, 0) >= 4 ||
+      countTotal(newBoard, x, y, 0, 1) + countTotal(newBoard, x, y, 0, -1) >= 4 ||
+      countTotal(newBoard, x, y, 1, 1) + countTotal(newBoard, x, y, -1, -1) >=  4 ||
+      countTotal(newBoard, x, y, 1, -1) + countTotal(newBoard, x, y, -1, 1) >= 4
+    ) {
+      setWinner(newBoard[x][y]);
+    }
+  };
+  
+  const handlePlayClick = (x, y, currentPlayer) => () => {
+    const newBoard = JSON.parse(JSON.stringify(board));
+  
+    if (board[x][y] === 'empty' && !winner) {
+      newBoard[x][y] = currentPlayer;
+    } else {
+      return;
+    }
+  
+    setBoard(newBoard);
+    setPlayer(currentPlayer === 'black' ? 'white' : 'black');
+    checkWinner(newBoard, x, y);
+  };
+  
+  const handleRestartButtonClick = () => {
+    setPlayer(initialPlayer);
+    setBoard(initialBoard);
+    setWinner();
   };
 
   return {
